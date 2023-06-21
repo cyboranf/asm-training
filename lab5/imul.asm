@@ -2,30 +2,26 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
+a        equ -65535
 b        equ 2
 
          mov eax, a  ; eax = a
-         mov edx, b  ; edx = b
+         mov ecx, b  ; ecx = b
 
-         mul edx  ; edx:eax - eax*edx
+         imul eax, ecx  ; eax = eax * ecx
 
-;        mul arg  ; edx:eax = eax*arg
-
-         push edx  ; edx -> stack
-         push eax  ; eax -> stack
-
-;        esp -> [eax][edx][ret]
+         push eax
+         
+;        esp -> [eax][ret]
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db "Iloczyn = %u", 0xA, 0
+         db "iloczyn = %d", 0xA, 0
 getaddr:
 
-;        esp -> [format][eax][edx][ret]
+;        esp -> [format][eax][ret]
 
-         call [ebx+3*4]  ; printf("Iloczyn = %u", edx:eax);
-         add esp, 3*4
+         call [ebx+3*4]  ; printf("Hello World!");
 
 ;        esp -> [ret]
 

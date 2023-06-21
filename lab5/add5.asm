@@ -3,29 +3,25 @@
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
 a        equ 4294967295
-b        equ 2
+b        equ 1
 
-         mov eax, a  ; eax = a
-         mov edx, b  ; edx = b
+;        Obliczenia a+b
 
-         mul edx  ; edx:eax - eax*edx
+         mov rax, a  ; rax = a
+         add rax, b  ; rax = rax + b
 
-;        mul arg  ; edx:eax = eax*arg
+         push rax  ; rax -> stack
 
-         push edx  ; edx -> stack
-         push eax  ; eax -> stack
-
-;        esp -> [eax][edx][ret]
+;        esp -> [rax][ret]
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db "Iloczyn = %u", 0xA, 0
+         db "wynik = %lld", 0xA, 0
 getaddr:
 
-;        esp -> [format][eax][edx][ret]
+;        esp -> [format][rax][ret]
 
-         call [ebx+3*4]  ; printf("Iloczyn = %u", edx:eax);
-         add esp, 3*4
+         call [ebx+3*4]  ; printf("wynik = %lld ");
 
 ;        esp -> [ret]
 
