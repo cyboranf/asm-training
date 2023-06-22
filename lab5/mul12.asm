@@ -11,20 +11,21 @@ b        equ 2
          mul edx  ; edx:eax = eax*edx
 
 ;        mul arg  ; edx:eax = eax*arg
-
+         
+         push edx  ; edx -> stack
          push eax  ; eax -> stack
 
-;        esp -> [eax][ret]
+;        esp -> [eax][edx][ret]
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db 'iloczyn = %u', 0xA, 0
+         db 'iloczyn = %llu', 0xA, 0
 getaddr:
 
-;        esp -> [format][eax][ret]
+;        esp -> [format][eax][edx][ret]
 
          call [ebx+3*4]  ; printf('iloczyn = %u\n', eax);
-         add esp, 2*4    ; esp = esp + 8
+         add esp, 3*4    ; esp = esp + 12
 
 ;        esp -> [ret]
 

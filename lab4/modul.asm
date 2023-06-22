@@ -2,29 +2,33 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
-b        equ 2
+a        equ -5
 
-         mov eax, a  ; eax = a
-         mov edx, b  ; edx = b
+         mov eax, a    ; eax = a
+         mov edx, eax  ; edx = eax
 
-         mul edx  ; edx:eax = eax*edx
+         cmp eax, 0     ; eax - 0                  ; OF SF ZF AF PF CF affected
+         jge nieujemna  ; jump if greater or equal ; jump if SF == OF or ZF = 1
 
-;        mul arg  ; edx:eax = eax*arg
+         neg edx        ; edx = -edx
+         
+nieujemna:
 
+         push edx  ; edx -> stack
          push eax  ; eax -> stack
 
-;        esp -> [eax][ret]
+;        esp -> [eax][edx][ret]
 
-         call getaddr  ; push on the stack the runtime address of format and jump to getaddr
+         call getaddr ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db 'iloczyn = %u', 0xA, 0
+         db 'liczba = %d', 0xA
+         db 'modul = %d', 0xA, 0
 getaddr:
 
-;        esp -> [format][eax][ret]
+;        esp -> [format][eax][edx][ret]
 
-         call [ebx+3*4]  ; printf('iloczyn = %u\n', eax);
-         add esp, 2*4    ; esp = esp + 8
+         call [ebx+3*4]  ; printf(format, eax, edx);
+         add esp, 3*4    ; esp = esp + 12
 
 ;        esp -> [ret]
 

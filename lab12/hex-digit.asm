@@ -2,15 +2,16 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
-b        equ 2
+n        equ 9       ; n = 0..15
 
-         mov eax, a  ; eax = a
-         mov edx, b  ; edx = b
+         mov eax, n  ; eax = n
 
-         mul edx  ; edx:eax = eax*edx
+         cmp al, 9  ; eax - 9                ; OF SF ZF AF PF CF affected
+         jbe _09    ; jump if below or equal ; jump if CF = 1 or ZF = 1
 
-;        mul arg  ; edx:eax = eax*arg
+_AF      add al, 'A' - 10 - '0'  ; al = al + 'A' - 10 - '0'
+
+_09      add al, '0'  ; al = al + '0'
 
          push eax  ; eax -> stack
 
@@ -18,12 +19,12 @@ b        equ 2
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db 'iloczyn = %u', 0xA, 0
+         db 'hexDigit = %c', 0xA, 0
 getaddr:
 
 ;        esp -> [format][eax][ret]
 
-         call [ebx+3*4]  ; printf('iloczyn = %u\n', eax);
+         call [ebx+3*4]  ; printf('hexDigit = %c\n', eax);
          add esp, 2*4    ; esp = esp + 8
 
 ;        esp -> [ret]

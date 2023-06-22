@@ -2,34 +2,54 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
-b        equ 2
+%ifdef COMMENT
+0   1   2   3   4   5   6    indeksy
 
-         mov eax, a  ; eax = a
-         mov edx, b  ; edx = b
+a   b   d
+|---|---|
+1   1   2   3   5   8   13   wartosci
+    |---|---|
+    a   b   d
 
-         mul edx  ; edx:eax = eax*edx
+Przesuniecie ramki:
 
-;        mul arg  ; edx:eax = eax*arg
+a = b      ; a = 1
+b = d      ; b = 2
+d = a + b  ; d = 1 + 2 = 3
+%endif
 
+         mov ebp, ebx  ; ebp = ebx
+         
+         mov ebx, 1  ; ebx = 1
+         mov edx, 2  ; edx = 2
+
+         mov eax, ebx  ; a = b
+         mov ebx, edx  ; b = d
+         add eax, ebx  ; a = a + b
+         mov edx, eax  ; d = a
+
+         push edx  ; edx -> stack
+         push ebx  ; ebx -> stack
          push eax  ; eax -> stack
 
-;        esp -> [eax][ret]
+;        esp -> [eax][ebx][edx][ret]
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db 'iloczyn = %u', 0xA, 0
+         db 'a = %d', 0xA
+         db 'b = %d', 0xA
+         db 'd = %d', 0xA, 0
 getaddr:
 
-;        esp -> [format][eax][ret]
+;        esp -> [format][eax][ebx][edx][ret]
 
-         call [ebx+3*4]  ; printf('iloczyn = %u\n', eax);
-         add esp, 2*4    ; esp = esp + 8
+         call [ebp+3*4]  ; printf(format, a, b, d);
+         add esp, 4*4    ; esp = esp + 16
 
 ;        esp -> [ret]
 
          push 0          ; esp -> [0][ret]
-         call [ebx+0*4]  ; exit(0);
+         call [ebp+0*4]  ; exit(0);
 
 ; asmloader API
 ;

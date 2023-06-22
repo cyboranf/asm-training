@@ -2,41 +2,42 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
-b        equ 1
-
-;          0:eax
-;        + 0:esi
-;        -------
-;        edi:esi
-
-         mov eax, a  ; eax = a
-         mov esi, b  ; esi = b
-
-         add esi, eax  ; esi = esi + eax
-
-         mov edi, 0  ; edi = 0
-         adc edi, 0  ; edi = edi + 0 + CF
-
-         push edi  ; edi -> stack
-         push esi  ; esi -> stack
-
-;        esp -> [esi][edi][ret]
+n        equ 15        ; n = 0 0..15
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
-format:
-         db 'suma = %llu', 0xA, 0
+
+digits   db "0123456789ABCDEF"
+
 getaddr:
 
-;        esp -> [format][esi][edi][ret]
+;        esp -> [digits][ret]
 
-         call [ebx+3*4]  ; printf('suma = %llu\n', edi:esi);
+         mov ebp, ebx  ; ebp = ebx
+
+         mov ebx, [esp]  ; ebx = *(int*)esp = digits
+
+         mov al, n  ; al = n
+
+         xlat  ; al = *(char*)(ebx + al)  ; table lookup translation
+
+         push eax  ; eax ->stack
+
+;        esp -> [eax][digits][ret]
+
+         call getaddr2  ; push on the stack the runtime address of format and jump to getaddr
+format:
+         db 'hexDigit = %c', 0xA, 0
+getaddr2:
+
+;        esp -> [format][eax][digits][ret]
+
+         call [ebp+3*4]  ; printf('hexDigit = %c\n', eax);
          add esp, 3*4    ; esp = esp + 12
 
 ;        esp -> [ret]
 
          push 0          ; esp -> [0][ret]
-         call [ebx+0*4]  ; exit(0);
+         call [ebp+0*4]  ; exit(0);
 
 ; asmloader API
 ;

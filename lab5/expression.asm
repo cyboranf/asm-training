@@ -2,18 +2,22 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 3
-b        equ 4
-c        equ 2
+a        equ 4
+b        equ 5
+c        equ 6
+
+;        a + b*c = 4 + 5*6 = 34
 
          mov eax, b  ; eax = b
-         mov edx, c  ; edx = c
+         mov ecx, c  ; ecx = c
 
-         mul edx
+         mul ecx  ; edx:eax = eax*ecx
+
+;        mul arg  ; edx:eax = eax*arg
 
          mov ecx, a  ; ecx = a
 
-         add eax, ecx
+         add eax, ecx  ; eax = eax + ecx
 
          push eax  ; eax -> stack
 
@@ -21,12 +25,13 @@ c        equ 2
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db "wynik = %d", 0xA, 0
+         db 'wynik = %u', 0xA, 0
 getaddr:
 
 ;        esp -> [format][eax][ret]
 
-         call [ebx+3*4]  ; printf("Wynik = %d");
+         call [ebx+3*4]  ; printf('wynik = %u\n', eax);
+         add esp, 2*4    ; esp = esp + 8
 
 ;        esp -> [ret]
 

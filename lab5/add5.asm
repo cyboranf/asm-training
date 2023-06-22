@@ -2,26 +2,49 @@
 
 ;        esp -> [ret]  ; ret - adres powrotu do asmloader
 
-a        equ 4294967295
-b        equ 1
+%ifdef COMMENT
 
-;        Obliczenia a+b
+       INT_MIN = -2147483648
+       INT_MAX = 2147483647
 
-         mov rax, a  ; rax = a
-         add rax, b  ; rax = rax + b
+%endif
 
-         push rax  ; rax -> stack
+a        equ -2147483648
+b        equ -1
 
-;        esp -> [rax][ret]
+;        edx:eax
+;        edi:esi +
+;        -------
+;        edi:esi
+
+         mov eax, a  ; eax = a
+
+         cdq  ; edx:eax = eax  ; signed conversion
+
+         mov edi, edx  ; edi = edx
+         mov esi, eax  ; esi = eax
+         
+         mov eax, b  ; eax = b
+         
+         cdq  ; edx:eax = eax  ; signed conversion
+         
+         add esi, eax  ; esi = esi + eax
+         adc edi, edx  ; edi = edi + edx + CF
+
+         push edi  ; edi -> stack
+         push esi  ; esi -> stack
+
+;        esp -> [esi][edi][ret]
 
          call getaddr  ; push on the stack the runtime address of format and jump to getaddr
 format:
-         db "wynik = %lld", 0xA, 0
+         db 'suma = %lld', 0xA, 0
 getaddr:
 
-;        esp -> [format][rax][ret]
+;        esp -> [format][esi][edi][ret]
 
-         call [ebx+3*4]  ; printf("wynik = %lld ");
+         call [ebx+3*4]  ; printf('suma = %llu\n', edi:esi);
+         add esp, 3*4    ; esp = esp + 12
 
 ;        esp -> [ret]
 
