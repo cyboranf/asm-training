@@ -1,0 +1,48 @@
+- jaki adres ma instrukcja add esp, 4 ? *
+
+00000005
+
+
+- ile bajtów ma instrukcja add esp, 4 ? *
+
+3 bajty
+
+
+- jaki kod rozkazu ma instrukcja add esp, 4 ? *
+
+83C4
+
+
+- ile bajtów zajmuje kod rozkazu instrukcji add esp, 4 ? *
+
+2 bajty
+
+
+- jaki kod ma argument instrukcji add esp, 4 ? *
+
+04
+
+
+- jaki adres ma instrukcja call [ebx+0*4] ? *
+
+0000000A
+
+
+- ile bajtów ma instrukcja call [ebx+0*4] ? *
+
+2 bajty
+
+
+- jaki kod rozkazu ma instrukcja call [ebx+0*4] ? *
+
+FF13
+
+
+- ile bajtów zajmuje kod rozkazu instrukcji call [ebx+0*4] ? *
+
+2 bajty
+
+
+- czy instrukcja call [ebx+0*4] ma kod argumentu? *
+
+nie ma

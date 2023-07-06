@@ -1,0 +1,12 @@
+Jaki obszar pamiêci mo¿na zaadresowaæ przy pomocy adresów 16, 20, 24, 32, 40, 48 i 64
+bitowych?
+
+Na ka¿dym bicie mo¿na zapisaæ 0 lub 1
+
+16 bitowe : 2^16
+20 bitowe : 2^20
+24 bitowe : 2^24
+32 bitowe : 2^32
+40 bitowe : 2^40
+48 bitowe : 2^48
+64 bitowe : 2^64

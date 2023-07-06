@@ -1,0 +1,13 @@
+n - liczba całkowita
+	
+	1  dla n = 0
+f(n) = 
+	floor(log10(|n|)) + 1  dla n != 0
+
+
+
+albo
+
+	1  dla n = 0
+f(n) = 
+	(int)(log10(|n|)) + 1  dla n != 0
